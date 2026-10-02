@@ -50,7 +50,7 @@ Roles ONLY from the glossary (no invented `user`/`admin`). Each US is covered by
 
 ## 5. Acceptance criteria
 
-<!-- instruction: ≥1 AC of EACH of the 5 coverage types, no upper cap. Format:
+<!-- instruction: ≥1 AC of EACH of the 5 coverage types (authorization waivable only by its explicit, sourced N/A — see type 3 below), no upper cap. Format:
 
 ### AC-NN (US-XX) — <coverage type>
 **Given** <business preconditions: actor role, state of their domain objects, prior events>
@@ -73,7 +73,7 @@ Allowed: glossary roles, domain-invariant NAMES as natural-language phrases («n
 The 5 mandatory coverage types (≥1 each):
 1. happy — actor does the main flow → system records the outcome and confirms.
 2. error — actor submits invalid input → system blocks it and explains the reason in plain language.
-3. authorization — actor lacks permission → system denies access OR hides existence (rationale in business terms).
+3. authorization — actor lacks permission → system denies access OR hides existence (rationale in business terms). The ONLY waiver: an explicit `**Authorization: N/A — <reason> (source: <upstream artifact + §ref>)` line, legal only when an authoritative upstream artifact (committed approach / §3 non-goal / discovery / named product doc) excludes auth or establishes a trust boundary — see draft-generation.md. Mirror the boundary in §3 + §6.1. A bare omission is a floor violation.
 4. domain invariant — actor violates a named invariant → system blocks and names the invariant plainly.
 5. cross-context — actor's action depends on state in another bounded context → system enforces the cross-context rule.
 

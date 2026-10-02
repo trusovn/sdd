@@ -30,7 +30,7 @@ unresolved decision.
 
 ## §5 acceptance-criteria contract
 
-AC describes a **business-observable outcome from the actor's perspective**, in Given/When/Then. **No upper cap** — propose as many as needed so **every §4 user story has ≥1 AC** and all five coverage types appear. If a `Drop` / `Save as Open Question` during Socratic leaves a coverage type empty **or a retained §4 user story with no AC**, regenerate a replacement AC and run a mini-batch on it (the two coverage floors, see [`socratic.md`](./socratic.md)). The «every US has ≥1 AC» rule is a **re-checked floor**, not only a draft-time target — it's verified after every §5 resolution, so `sequences` and `review` downstream can rely on each use-case having a testable criterion.
+AC describes a **business-observable outcome from the actor's perspective**, in Given/When/Then. **No upper cap** — propose as many as needed so **every §4 user story has ≥1 AC** and all five coverage types appear (authorization may instead carry the explicit, sourced N/A below — the only waiver). If a `Drop` / `Save as Open Question` during Socratic leaves a coverage type empty **or a retained §4 user story with no AC**, regenerate a replacement AC and run a mini-batch on it (the two coverage floors, see [`socratic.md`](./socratic.md)). The «every US has ≥1 AC» rule is a **re-checked floor**, not only a draft-time target — it's verified after every §5 resolution, so `sequences` and `review` downstream can rely on each use-case having a testable criterion.
 
 Five coverage types, ≥1 each:
 
@@ -39,6 +39,22 @@ Five coverage types, ≥1 each:
 3. **authorization** — actor lacks permission (cross-tenant / cross-role / not-owner) → system denies access or hides existence; rationale in business terms.
 4. **domain invariant** — actor violates a named invariant → system blocks the action and names the invariant in plain language.
 5. **cross-context** — actor's action depends on state in another bounded context → system enforces the cross-context rule.
+
+### Authorization N/A — the only coverage waiver (strict)
+
+Authorization analysis is **always performed**; only its AC is waivable, and only by an
+**explicit, sourced N/A**. A bare omission is a floor violation. The waiver is legal **only
+when an authoritative upstream artifact — the committed approach (§1 ¶3), §3 Non-goals,
+`discovery.md`, or a governing product doc named as a step-5 channel — explicitly excludes
+authentication/roles/permissions from this feature or establishes a trust boundary that makes
+authorization inapplicable** (e.g. «one trusted operator in a controlled installation; auth
+deferred to a later iteration»). The exclusion must already be on record upstream — **do not
+invent it to fill the type**; if no artifact says it, ask and record it as a §3 non-goal first.
+When the N/A holds, write it in §5 as its own line — `**Authorization: N/A — <reason> (source:
+<artifact + §ref>)` — and mirror the trust boundary in §6.1 (AuthZ/AuthN impact + abuse cases
+reduced to the boundary) and §3 (a non-goal fencing off auth). A scope boundary that is not
+about *who may act* (per-tenant limits, feature flags, input validation) is **not** authorization
+— do not mislabel it to satisfy the floor.
 
 ## Forbidden tokens in §5 AC (stack-agnostic, zero tolerance)
 
@@ -68,7 +84,7 @@ Each row requires: Metric, Why it matters, Source/event, Baseline, Target/timebo
 - §4 US roles use CONTEXT glossary terms verbatim.
 - §3 Non-goals each carry a reason (no inventing).
 - §1 ¶3 states the committed approach without losing the vector.
-- §5 has ≥1 of each coverage type and 0 forbidden tokens (self-scan; the critic + regex are the backstop).
+- §5 has ≥1 of each coverage type (authorization may carry its explicit, sourced N/A — the only waiver) and 0 forbidden tokens (self-scan; the critic + regex are the backstop).
 - §7 has ≥3 important KPI rows, with no blank source/event, owner, decision threshold, or review timing; an unknown or future-measured baseline has a concrete baseline plan and matching §8 owner+due.
 - When discovery fired, every relevant discovery result maps to a spec section, and no
   `RESEARCH_LIMITED` item is presented as verified fact.

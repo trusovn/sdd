@@ -611,6 +611,40 @@ def main() -> int:
           "focused product-measurement eval exists",
           "evals/scenarios/specify-product-measurement-plan must include prompt, rubric, and fixture")
 
+    # --- specify authorization coverage: the N/A waiver stays explicit and sourced ---
+    # The authorization AC floor spans the template, drafting guidance, the Socratic gate, the
+    # critic floor, and clarify's second catch. The waiver is legal ONLY as an explicit,
+    # source-cited N/A — a future simplification must not turn it into a silent skip or a
+    # self-declared (unsourced) excuse. Guard every link of the contract.
+    print("== specify authorization coverage ==")
+    draft_gen_path = ROOT / "skills" / "specify" / "references" / "draft-generation.md"
+    socratic_path = ROOT / "skills" / "specify" / "references" / "socratic.md"
+    specify_critic_path = ROOT / "skills" / "specify" / "references" / "critic.md"
+    depth_path = ROOT / "skills" / "_shared" / "interview-depth.md"
+    ambiguity_path = ROOT / "skills" / "clarify" / "references" / "ambiguity-checks.md"
+    spec_template_text = flat(spec_template_path) if spec_template_path.exists() else ""
+    authz_waiver_files = {
+        "draft-generation.md": flat(draft_gen_path) if draft_gen_path.exists() else "",
+        "socratic.md": flat(socratic_path) if socratic_path.exists() else "",
+        "critic.md": flat(specify_critic_path) if specify_critic_path.exists() else "",
+        "interview-depth.md": flat(depth_path) if depth_path.exists() else "",
+        "ambiguity-checks.md": flat(ambiguity_path) if ambiguity_path.exists() else "",
+    }
+
+    for waiver_file, waiver_text in authz_waiver_files.items():
+        check("authorization: n/a" in waiver_text and "source" in waiver_text,
+              f"authorization N/A waiver stays explicit + sourced in {waiver_file}",
+              f"the authorization coverage waiver must remain an explicit, source-cited N/A in "
+              f"{waiver_file} — a silent skip or an unsourced excuse is a floor violation")
+    check("authoritative upstream artifact" in authz_waiver_files["draft-generation.md"],
+          "draft-generation.md names the waiver's authority condition",
+          "skills/specify/references/draft-generation.md must tie the authorization N/A to an "
+          "authoritative upstream artifact (committed approach / non-goal / discovery / product doc)")
+    check("authorization: n/a" in spec_template_text,
+          "spec template documents the authorization N/A form",
+          "skills/specify/templates/spec.md must show the sourced `Authorization: N/A` waiver "
+          "line next to the coverage-type list")
+
     # --- plan-tests risk + measurement continuity: promises reach executable/release evidence ---
     # Risk/KPI rows are useful only if plan-tests distinguishes pre-release readiness from future
     # outcomes and implement refuses to silently drop executable rows that have no task owner.
