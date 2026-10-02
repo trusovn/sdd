@@ -397,6 +397,41 @@ def main() -> int:
               f"skills/survey/templates/architecture-map.md frontmatter lost the `{key}` key — "
               f"command-detection / staleness checks read it")
 
+    # --- survey document authority: historical material cannot become the active plan ---
+    # Survey is the architecture anchor, so its input classification must fail closed when a
+    # docs-only/greenfield repo explicitly says the active architecture plan is missing.
+    print("== survey document authority ==")
+    survey_text = flat(ROOT / "skills" / "survey" / "SKILL.md")
+    authority_classes = ("active/current authoritative plans", "accepted adrs/current architecture",
+                         "historical documents", "research/spikes",
+                         "abandoned or superseded plans")
+    check(all(authority_class in survey_text for authority_class in authority_classes),
+          "survey classifies architecture/product documents by authority",
+          "skills/survey/SKILL.md must distinguish active plans, accepted/current architecture, "
+          "historical documents, research/spikes, and abandoned/superseded plans")
+    check("must not authorize target architecture" in survey_text
+          and "active architecture plan is missing" in survey_text
+          and "write no foundation artifacts" in survey_text,
+          "survey refuses to promote historical material when an active plan is explicitly missing",
+          "skills/survey/SKILL.md must keep the greenfield authority gate: historical evidence "
+          "cannot authorize targets, and an explicitly missing active plan stops foundation writes")
+
+    survey_evals = (
+        "survey-authority-conflict",
+        "survey-missing-active-plan",
+        "survey-empty-cli-scaffold",
+    )
+    missing_survey_eval_parts = [
+        f"{name}/{part}"
+        for name in survey_evals
+        for part in ("prompt.txt", "rubric.md")
+        if not (ROOT / "evals" / "scenarios" / name / part).exists()
+    ]
+    check(not missing_survey_eval_parts,
+          "focused survey authority/scaffold evals exist",
+          "survey authority regression scenarios are incomplete: "
+          + ", ".join(missing_survey_eval_parts))
+
     # --- model policy consistency: judgment_model is documented everywhere it matters ---
     # The judgment_model settings key (open value-set switch for the judgment agents) is defined in
     # the settings doc, consumed per agent-roster's precedence, and surfaced to users in the README —

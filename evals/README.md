@@ -49,6 +49,9 @@ Exit code is non-zero when any scenario's verdict is `FAIL` (or unparseable).
 | `specify-unfamiliar-domain-discovery` | `/sdd:specify --depth=easy` still runs risk-gated authoritative domain discovery, writes `discovery.md`, preserves `RESEARCH_LIMITED` source gaps, and feeds relevant findings into `spec.md` |
 | `specify-product-measurement-plan` | `/sdd:specify` produces actionable KPI rows with observable sources, baseline plans, target/timeboxes, decision thresholds, owners, and review timing |
 | `plan-tests-risk-measurement-coverage` | `/sdd:plan-tests` traces retained risks and KPI promises into task-linked pre-release evidence plus honest post-release outcome monitoring |
+| `survey-authority-conflict` | `/sdd:survey` follows a current local-CLI plan over a conflicting historical distributed-system spike and keeps the scaffold structural |
+| `survey-missing-active-plan` | `/sdd:survey` on a docs-only repo whose authority map says the active architecture plan is missing stops without promoting historical research |
+| `survey-empty-cli-scaffold` | `/sdd:survey` on an empty CLI repo uses prompt-confirmed foundation decisions and hands the structural plan to the current `scaffold` flow |
 | `design-gate-refusal` | `/sdd:design` on a folder with `.size` but **no spec.md** refuses, points at `specify`, writes no sad.md/ADRs |
 | `classify-size` | `/sdd:classify-size` writes one-token `.size` + `.route` and hands off (utility variant) |
 | `api-fastlane-no-datamodel` | `/sdd:api` on a no-schema-change feature **without** data-model.md does not refuse — it derives the contract from the existing schema, names the legal skip + «existing schema» origins, and emits the handoff |

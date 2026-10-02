@@ -1,0 +1,5 @@
+/sdd:survey --depth=easy
+
+Headless eval run — there is NO interactive user. Follow the repository authority map. No product
+or architecture decisions beyond the fixture are supplied. Do not infer the missing active plan
+from the historical spike and never ask a question.

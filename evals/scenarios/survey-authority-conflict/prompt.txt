@@ -1,0 +1,9 @@
+/sdd:survey --depth=easy
+
+Headless eval run — there is NO interactive user. Read the repository authority files before
+choosing a foundation. The current `docs/v1-plan.md` is confirmed; the architecture spike is
+historical evidence only.
+
+Use these confirmed foundation decisions: Python 3.12, Typer, `src/local_media/`, `pytest`,
+`ruff check .`, GitHub Actions, and no datastore or migration tool. Create the foundation and
+structural scaffold plan, then hand off to `/sdd:scaffold`. Never ask a question.

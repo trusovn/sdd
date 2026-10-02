@@ -1,0 +1,6 @@
+/sdd:survey --depth=easy
+
+Headless eval run — there is NO interactive user. This is an empty repository for a new local CLI.
+The foundation is explicitly confirmed here: Node.js 22 + TypeScript, npm, `src/cli.ts`, `tests/`,
+Vitest, ESLint, GitHub Actions, README, and no datastore or migration tool. Establish only the
+foundation and structural scaffold plan. Never ask a question.

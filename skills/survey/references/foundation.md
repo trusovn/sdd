@@ -5,6 +5,12 @@ session to **establish the foundation** so the per-feature flow has something re
 then hands the skeleton plan to `scaffold`. The session is **adaptive to the person** — gauge their
 level once, then meet them there.
 
+The authority/readiness gate in [`../SKILL.md`](../SKILL.md) runs before these choices. Active plans
+and accepted ADRs constrain the session; historical documents, research/spikes, and
+abandoned/superseded plans can inform questions but cannot supply a missing decision. When the repo
+explicitly says the active architecture plan is missing, the user or prompt must resolve or defer
+the architecture-bearing gaps before this reference's foundation choices are applied.
+
 ## G2 — Calibrate (one question, sets everything after)
 
 Open with a single `AskUserQuestion` that gauges how the user wants to engage (and implicitly their level). Phrase it warmly, per [`../../_shared/ask-style.md`](../../_shared/ask-style.md):
