@@ -1,0 +1,6 @@
+/sdd:tasks release-health --depth=easy
+
+Headless eval run — there is NO interactive user; never call AskUserQuestion. Follow the tasks
+skill exactly. The fixture is a quick-route feature whose project convention requires every task
+DoD to name its specific test. Use `<TBD lead>` as every owner, write the task artifacts, and
+finish with the stage-handoff block.

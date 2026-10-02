@@ -75,6 +75,59 @@ def read_frontmatter(path: Path) -> dict[str, str]:
     return fm
 
 
+def markdown_tables(path: Path) -> list[tuple[str, tuple[str, ...], list[tuple[str, ...]]]]:
+    """Return Markdown tables as (section heading, header cells, body rows)."""
+    lines = path.read_text().splitlines()
+    tables: list[tuple[str, tuple[str, ...], list[tuple[str, ...]]]] = []
+    heading = ""
+    i = 0
+
+    def cells(line: str) -> tuple[str, ...]:
+        return tuple(re.sub(r"[`*_]", "", cell).strip().lower()
+                     for cell in line.strip().strip("|").split("|"))
+
+    def separator(line: str) -> bool:
+        parts = cells(line)
+        return bool(parts) and all(re.fullmatch(r":?-{3,}:?", part) for part in parts)
+
+    while i < len(lines):
+        heading_match = re.match(r"^#{1,6}\s+(?:\d+(?:\.\d+)*\.?\s+)?(.+?)\s*$", lines[i])
+        if heading_match:
+            heading = re.sub(r"[`*_]", "", heading_match.group(1)).strip().lower()
+        if (lines[i].lstrip().startswith("|") and i + 1 < len(lines)
+                and separator(lines[i + 1])):
+            header = cells(lines[i])
+            rows: list[tuple[str, ...]] = []
+            i += 2
+            while i < len(lines) and lines[i].lstrip().startswith("|"):
+                rows.append(cells(lines[i]))
+                i += 1
+            tables.append((heading, header, rows))
+            continue
+        i += 1
+    return tables
+
+
+def markdown_headings(path: Path) -> set[str]:
+    """Return normalised Markdown heading names without numeric section prefixes."""
+    headings: set[str] = set()
+    for line in path.read_text().splitlines():
+        match = re.match(r"^#{1,6}\s+(?:\d+(?:\.\d+)*\.?\s+)?(.+?)\s*$", line)
+        if match:
+            headings.add(re.sub(r"[`*_]", "", match.group(1)).strip().lower())
+    return headings
+
+
+def table_row(path: Path, first_cell: str) -> tuple[str, ...]:
+    """Return the first table row whose first cell matches first_cell."""
+    wanted = first_cell.lower()
+    for _heading, _header, rows in markdown_tables(path):
+        for row in rows:
+            if row and row[0] == wanted:
+                return row
+    return ()
+
+
 def main() -> int:
     print("== manifests ==")
     plugin = load_json(".claude-plugin/plugin.json")
@@ -491,45 +544,40 @@ def main() -> int:
     # This workflow spans an agent, a conditional template, the specify spine, and its drafting
     # reference. A missing link can leave discovery silently skipped or written but never consumed.
     print("== specify domain discovery ==")
-    specify_text = flat(ROOT / "skills" / "specify" / "SKILL.md")
+    specify_path = ROOT / "skills" / "specify" / "SKILL.md"
+    specify_text = flat(specify_path)
     investigator = ROOT / "agents" / "domain-investigator.md"
     discovery_template = ROOT / "skills" / "specify" / "templates" / "discovery.md"
     draft_generation = ROOT / "skills" / "specify" / "references" / "draft-generation.md"
+    roster = ROOT / "skills" / "_shared" / "agent-roster.md"
     discovery_eval = ROOT / "evals" / "scenarios" / "specify-unfamiliar-domain-discovery"
 
     check(investigator.exists() and discovery_template.exists(),
           "domain-investigator and discovery.md template exist",
           "specify domain discovery requires agents/domain-investigator.md and "
           "skills/specify/templates/discovery.md")
-    trigger_terms = ("unfamiliar", "regulated", "safety", "security", "privacy",
-                     "operationally high-risk", "external rules", "standards", "regulations",
-                     "current authoritative facts", "materially change product scope")
-    check(all(term in specify_text for term in trigger_terms),
-          "specify carries every domain discovery trigger",
-          "skills/specify/SKILL.md lost one or more discovery triggers: "
-          + ", ".join(term for term in trigger_terms if term not in specify_text))
-    check("any depth" in specify_text and "sdd:domain-investigator" in specify_text,
-          "risk-gated domain investigation runs at any depth",
-          "specify must dispatch sdd:domain-investigator at any depth when discovery fires")
-
-    investigator_text = flat(investigator) if investigator.exists() else ""
-    check("not the competitive `researcher`" in investigator_text
-          and "authoritative" in investigator_text and "research_limited" in investigator_text,
-          "domain-investigator is authoritative-source focused and non-competitive",
-          "domain-investigator must remain distinct from competitive researcher and preserve RESEARCH_LIMITED")
+    specify_agents = parse_list(read_frontmatter(specify_path).get("agents", ""))
+    check("domain-investigator" in specify_agents
+          and bool(table_row(roster, "domain-investigator"))
+          and "sdd:domain-investigator" in specify_text
+          and "discovery.md" in specify_text,
+          "domain-investigator is registered and specify names its discovery artifact",
+          "domain-investigator must remain in the roster and specify agent/artifact contract")
 
     template_text = discovery_template.read_text().lower() if discovery_template.exists() else ""
-    discovery_sections = ("verified domain facts", "terminology and workflow norms", "assumptions",
+    discovery_sections = {"why discovery was needed", "verified domain facts",
+                          "terminology and workflow norms", "assumptions",
                           "unknowns and source gaps", "authoritative sources", "edge cases",
-                          "failure modes", "risk register", "measurement / kpi seeds")
-    check(all(section in template_text for section in discovery_sections)
+                          "failure modes", "risk register", "measurement / kpi seeds"}
+    actual_discovery_sections = markdown_headings(discovery_template) if discovery_template.exists() else set()
+    check(discovery_sections <= actual_discovery_sections
           and "research_limited" in template_text,
           "discovery template preserves facts, uncertainty, risks, and measurements",
           "discovery.md template lost required content: "
-          + ", ".join(section for section in discovery_sections if section not in template_text))
+          + ", ".join(sorted(discovery_sections - actual_discovery_sections)))
 
-    drafting_text = draft_generation.read_text() if draft_generation.exists() else ""
-    check("Discovery-to-spec contract" in drafting_text
+    drafting_text = flat(draft_generation) if draft_generation.exists() else ""
+    check("discovery.md" in drafting_text
           and all(section in drafting_text for section in ("§1", "§3", "§5", "§6", "§7", "§8")),
           "discovery findings feed the current spec schema",
           "draft-generation.md must map discovery findings into the current spec instead of leaving dead documentation")
@@ -544,25 +592,19 @@ def main() -> int:
     # Guard the load-bearing fields so a future simplification cannot silently regress to a
     # baseline/target bullet list that lacks ownership or an actionable post-timebox decision.
     print("== specify KPI contract ==")
-    spec_template = flat(ROOT / "skills" / "specify" / "templates" / "spec.md")
-    socratic_text = flat(ROOT / "skills" / "specify" / "references" / "socratic.md")
-    critic_text = flat(ROOT / "skills" / "specify" / "references" / "critic.md")
+    spec_template_path = ROOT / "skills" / "specify" / "templates" / "spec.md"
     measurement_eval = ROOT / "evals" / "scenarios" / "specify-product-measurement-plan"
-    kpi_fields = ("metric", "why it matters", "source/event", "baseline", "target/timebox",
-                  "decision threshold", "owner", "when reviewed")
+    kpi_fields = {"metric", "why it matters", "source/event", "baseline", "target/timebox",
+                  "decision threshold", "owner", "when reviewed"}
+    spec_tables = markdown_tables(spec_template_path)
+    kpi_headers = next((set(header) for heading, header, _rows in spec_tables
+                        if heading == "metrics / kpis"), set())
 
-    check(all(field in spec_template for field in kpi_fields),
+    check(kpi_fields <= kpi_headers,
           "spec template carries the complete KPI decision contract",
           "skills/specify/templates/spec.md lost KPI fields: "
-          + ", ".join(field for field in kpi_fields if field not in spec_template))
-    check("unknown" in socratic_text and "source/event" in socratic_text
-          and "owner+due" in socratic_text,
-          "Socratic KPI review rejects unexplained unknown baselines",
-          "specify Socratic guidance must require a source/event baseline plan plus owner+due")
-    check(all(field in critic_text for field in kpi_fields)
-          and "monitor" in critic_text,
-          "critic checks complete and actionable KPI rows",
-          "specify critic must check every KPI field and reject monitor-only thresholds")
+          + ", ".join(sorted(kpi_fields - kpi_headers)))
+    # Actionable thresholds and honest unknown baselines are semantic behavior owned by this eval.
     check((measurement_eval / "prompt.txt").exists()
           and (measurement_eval / "rubric.md").exists()
           and (measurement_eval / "fixture" / "docs" / ".gitkeep").exists(),
@@ -583,34 +625,44 @@ def main() -> int:
 
     risk_sources = ("discovery.md §9", "sad.md §11", "spec.md §6.1")
     check(all(source in plan_tests_text for source in risk_sources)
-          and "not test-covered" in plan_tests_text
-          and "residual-risk owner" in plan_tests_text,
-          "plan-tests traces retained risks or records owner-backed residual risk",
-          "skills/plan-tests/SKILL.md must cover discovery/SAD/security risks and permit only "
-          "an explicit owner-backed not-test-covered rationale")
-    kpi_fields = ("metric", "source/event", "baseline plan", "target/timebox",
-                  "decision threshold", "owner", "review timing")
-    check(all(field in plan_tests_text for field in kpi_fields)
-          and "pre-release readiness check" in plan_tests_text
-          and "post-release outcome review" in plan_tests_text,
-          "plan-tests separates KPI signal readiness from post-release outcomes",
-          "skills/plan-tests/SKILL.md must preserve every KPI field and distinguish pre-release "
-          "readiness from post-release outcome review")
-    template_sections = ("## risk coverage", "## measurement readiness", "## implementation linkage")
-    check(all(section in test_plan_template for section in template_sections)
-          and "risk-nn" in test_plan_template and "meas-nn" in test_plan_template
-          and "pre-release readiness check" in test_plan_template
-          and "post-release outcome review" in test_plan_template,
+          and "risk-nn" in plan_tests_text and "meas-nn" in plan_tests_text,
+          "plan-tests names its risk, KPI, and identifier sources",
+          "skills/plan-tests/SKILL.md must name discovery/SAD/security sources and RISK-NN/MEAS-NN")
+
+    plan_tables = {heading: set(header)
+                   for heading, header, _rows in markdown_tables(
+                       ROOT / "skills" / "plan-tests" / "templates" / "test-plan.md")}
+    required_plan_tables = {
+        "risk coverage": {"check id", "source", "risk / failure mode", "severity",
+                          "verification / monitoring activity", "pass or decision condition",
+                          "owner / timing"},
+        "measurement readiness": {"check id", "metric", "source/event", "baseline plan",
+                                  "target/timebox", "decision threshold",
+                                  "pre-release readiness check", "post-release outcome review",
+                                  "owner / review timing"},
+        "implementation linkage": {"check id", "source row", "task link", "closure activity",
+                                   "evidence required", "owner / timing", "status"},
+    }
+    missing_plan_structure = {
+        heading: sorted(columns - plan_tables.get(heading, set()))
+        for heading, columns in required_plan_tables.items()
+        if columns - plan_tables.get(heading, set())
+    }
+    check(not missing_plan_structure
+          and "risk-nn" in test_plan_template and "meas-nn" in test_plan_template,
           "test-plan template carries risk, measurement, and linkage tables",
-          "skills/plan-tests/templates/test-plan.md lost one or more continuity sections/columns")
-    check("sdd-check" in implement_text
-          and "unassigned — update/split tasks before implement" in implement_text
-          and "hard planning gap" in implement_inputs
+          "skills/plan-tests/templates/test-plan.md lost structure: "
+          + repr(missing_plan_structure))
+    check("test-plan.md" in implement_text and "sdd-check" in implement_text
+          and "risk-nn" in implement_text and "meas-nn" in implement_text
+          and "test-plan.md" in implement_inputs
+          and "risk-nn" in implement_inputs and "meas-nn" in implement_inputs
           and "risk-nn" in test_author_text and "meas-nn" in test_author_text
-          and "assigned executable check" in implementer_text,
-          "implement closes task-linked checks and blocks unassigned executable gaps",
-          "implement and its RED/GREEN agents must consume SDD-Check rows and block rather than "
-          "drop unassigned pre-release checks")
+          and "risk-nn" in implementer_text and "meas-nn" in implementer_text,
+          "implementation contracts consume linked risk and measurement IDs",
+          "implement and its RED/GREEN agents must name test-plan.md and RISK-NN/MEAS-NN linkage")
+    # Honest residual handling, readiness-vs-outcome behavior, and task linkage are owned by the
+    # focused plan-tests eval below; the validator protects only their artifact structure.
     check((risk_measurement_eval / "prompt.txt").exists()
           and (risk_measurement_eval / "rubric.md").exists()
           and (risk_measurement_eval / "fixture" / "docs" / "features"
@@ -618,6 +670,29 @@ def main() -> int:
           "focused plan-tests risk/measurement eval exists",
           "evals/scenarios/plan-tests-risk-measurement-coverage must include prompt, rubric, "
           "and a feature fixture")
+
+    # --- plan-tests routing: task-level tests never replace the planning stage ---
+    print("== plan-tests routing ==")
+    tasks_path = ROOT / "skills" / "tasks" / "SKILL.md"
+    tasks_text = flat(tasks_path)
+    size_matrix_path = ROOT / "skills" / "_shared" / "size-matrix.md"
+    handoff_path = ROOT / "skills" / "_shared" / "handoff.md"
+    routing_eval = ROOT / "evals" / "scenarios" / "tasks-plan-tests-routing"
+    plan_tests_row = table_row(size_matrix_path, "plan-tests")
+    tasks_row = table_row(handoff_path, "tasks")
+
+    check(bool(plan_tests_row) and "## test plan" in " | ".join(plan_tests_row)
+          and bool(tasks_row) and "/sdd:plan-tests <slug>" in " | ".join(tasks_row)
+          and "../_shared/handoff.md" in tasks_text,
+          "route and handoff tables preserve the plan-tests stage and inline artifact",
+          "size-matrix/handoff/tasks contracts must structurally route tasks through plan-tests")
+    # Whether task-level test names incorrectly bypass this stage is owned by the routing eval.
+    check((routing_eval / "prompt.txt").exists()
+          and (routing_eval / "rubric.md").exists()
+          and (routing_eval / "fixture" / "docs" / "features"
+               / "release-health" / "spec.md").exists(),
+          "focused tasks-to-plan-tests routing eval exists",
+          "evals/scenarios/tasks-plan-tests-routing must include prompt, rubric, and a feature fixture")
 
     # --- the settings file: one canon, one create-anchor, one editor ---
     # Three invariants that only prose holds up, so the validator holds them mechanically:

@@ -48,7 +48,8 @@ Artifact depth ∝ feature size. XS/S → minimal set; M+ → full.
 ## Routes — quick / standard / full (the auto-router)
 
 The **route** decides how the optional stages (`clarify`, `ux-flows`, `sequences`, `data-model`,
-`api`, `screens`, `plan-tests`) are handled at each handoff. It lives in **`docs/features/<slug>/.route`** — one
+`api`, `screens`) are handled at each handoff. It also controls the depth of the required
+`plan-tests` stage. The route lives in **`docs/features/<slug>/.route`** — one
 line, plain text, exactly one of `quick` / `standard` / `full` (same discipline as `.size`: no
 comments, no frontmatter — wrappers grep it cheaply). It is written by `classify-size` (the
 canonical owner) and by `specify` step 1 when it classifies inline; the route **default derives
@@ -86,12 +87,13 @@ schema change still runs `data-model` — on every route.
 | `data-model` | **no schema change** — no new entity, column, index, or migration | `sequences`' handoff |
 | `api` | **no contract change** — no new/changed endpoint, event, CLI command, or public signature (the skill also self-skips on «no external interface»). `api` **accepts a legally-skipped `data-model`** (no schema change) — it derives from the existing schema; its hard gate fires only when a schema change exists | `data-model`'s handoff |
 | `screens` | **no UI surface declared** — `sad.md` frontmatter `target_surfaces` contains none of `web-frontend` / `mobile-app` / `desktop-app` | `api`'s handoff (carried forward when `api` is itself N/A) |
-| `plan-tests` | never fully skipped — it **collapses to the inline `## Test plan`** in `spec.md` (cheap; always inline on `quick`); skip entirely only when every task's DoD already names its test | `tasks`' handoff |
+| `plan-tests` | **never fully skipped** — on `quick` it collapses to the lightweight inline `## Test plan` in `spec.md`; on `standard` and `full` it runs normally. Task-level test names do not replace its risk, measurement, signal-readiness, outcome-review, or implementation-linkage work | `tasks`' handoff |
 
 **Never skippable — on any route:** `specify` (the spec is the trace anchor), `design` (declares
-`target_surfaces` + the ADR gate), `tasks` (`implement` consumes `tasks.json`), `implement`,
-`review`, `ship`. The shortest legal route is therefore
-`specify → design → tasks → implement → review → ship` — a `quick` XS feature closes in one session.
+`target_surfaces` + the ADR gate), `tasks` (`implement` consumes `tasks.json`), `plan-tests`
+(preserves risk and KPI obligations), `implement`, `review`, `ship`. The shortest legal route is
+therefore `specify → design → tasks → plan-tests → implement → review → ship` — a `quick` XS
+feature keeps the plan inline and can still close in one session.
 
 When several consecutive stages are N/A, walk the conditions in order at each handoff and jump to
 the first stage whose condition does **not** hold (skipping `sequences` moves its `data-model`
