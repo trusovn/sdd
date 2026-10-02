@@ -57,11 +57,18 @@ The technical mapping for all of these lives in `api` (HTTP method/path/status, 
 
 The product-level sections must not name a **concrete technology** — a specific datastore, message broker, framework, or library. Those are `design` decisions. The old SDLC skill hard-coded a Go/Postgres regex (`Postgres|Redis|Kafka|JSONB`…); the stack-agnostic rule is: flag any proper-noun product/library name in the WHAT/WHY sections and move it to the design stage.
 
+## §7 product-measurement contract
+
+Draft §7 as the compact KPI table in [`../templates/spec.md`](../templates/spec.md). Use the interview success criteria, discovery measurement seeds, ideation outcome metrics, and identified failure signals. Include only important product-outcome KPIs; do not add vanity counters to fill the table.
+
+Each row requires: Metric, Why it matters, Source/event, Baseline, Target/timebox, Decision threshold, Owner, and When reviewed. The source/event must be something the team can actually observe, such as an analytics event, log, support tag, survey, or review ritual. The decision threshold must pair a condition after the timebox with a resulting choice such as ship, continue, iterate, rollback, stop, or investigate; «monitor» alone is not a decision. `Baseline = 0` is valid only when the current baseline is genuinely zero. An unknown or future-measured baseline is allowed only when the row says how it will be measured and §8 carries an owner+due to establish it.
+
 ## Pre-write hygiene (before Socratic)
 
 - §4 US roles use CONTEXT glossary terms verbatim.
 - §3 Non-goals each carry a reason (no inventing).
 - §1 ¶3 states the committed approach without losing the vector.
 - §5 has ≥1 of each coverage type and 0 forbidden tokens (self-scan; the critic + regex are the backstop).
+- §7 has ≥3 important KPI rows, with no blank source/event, owner, decision threshold, or review timing; an unknown or future-measured baseline has a concrete baseline plan and matching §8 owner+due.
 - When discovery fired, every relevant discovery result maps to a spec section, and no
   `RESEARCH_LIMITED` item is presented as verified fact.

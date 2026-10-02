@@ -123,11 +123,13 @@ Tag each AC with its US-NN. Concurrent edge → add as AC-NNb, still in business
 
 ## 7. Metrics / KPIs
 
-<!-- instruction: ≥3 KPIs, no upper cap, each baseline → target with a timeframe. baseline=0 OK for a new feature; baseline=TBD requires a measurement plan inline. -->
+<!-- instruction: ≥3 important product-outcome KPIs, no upper cap. Every row fills all columns. baseline=0 is valid only when the current baseline is genuinely zero. An unknown or future-measured baseline is allowed only when Source/event explains how it will be established and §8 carries the owner+due. Decision threshold = the condition, evaluated after the timebox, that triggers ship / continue / iterate / rollback / stop / investigate. -->
 
-- **<metric 1>** — baseline: <...>, target: <... within ... days>.
-- **<metric 2>** — baseline: <...>, target: <...>.
-- **<metric 3>** — baseline: <...>, target: <...>.
+| Metric | Why it matters | Source/event | Baseline | Target/timebox | Decision threshold | Owner | When reviewed |
+|---|---|---|---|---|---|---|---|
+| <metric 1> | <decision or success claim this proves> | <analytics event / log / support tag / survey> | <current value or baseline plan> | <target within N days> | <condition and resulting decision> | <role> | <date or cadence> |
+| <metric 2> | <...> | <...> | <...> | <...> | <...> | <...> | <...> |
+| <metric 3> | <...> | <...> | <...> | <...> | <...> | <...> | <...> |
 
 ## 8. Open questions
 

@@ -1,0 +1,10 @@
+/sdd:specify onboarding-dropoff-insights --depth=easy
+
+Headless eval run — there is NO interactive user; never call AskUserQuestion. The raw idea to
+capture: product managers need an onboarding instrumentation plan that shows where new workspace
+admins abandon setup, whether the activation changes are improving completion, and when to roll
+back or iterate after release. The feature should capture product outcome measurement as part of
+the spec, not as loose "watch metrics later" prose. For everything you would normally ask, take
+the sensible default and record it in the assumptions ledger (size signals: 1 PR, under a week,
+existing onboarding flow, no new regulated data, no public marketing page). Write the spec and
+finish by printing the stage-handoff block.

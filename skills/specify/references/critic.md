@@ -17,6 +17,7 @@ Read [`../../_shared/critic.md`](../../_shared/critic.md) for the canonical disp
 - §4 holds ≥1 US per glossary role + per §2 goal.
 - §5 holds ≥1 AC of each of the 5 coverage types **after** drops + OQ-migrations.
 - §6 NFR rows all carry a numeric target + measurement (no adjectives, no lone TBD).
+- §7 has ≥3 important KPI rows in table form; every row fills Metric, Why it matters, Source/event, Baseline, Target/timebox, Decision threshold, Owner, and When reviewed. An unknown or future-measured baseline is valid only with a concrete source/event plan plus a §8 owner+due. Flag vanity counters, source-less rows, and thresholds that only say «monitor», «track», or «review» without a condition and resulting decision.
 - §8 Open Questions has a row for every `save_as_oq` with owner + due.
 - When discovery fired, its draft distinguishes verified facts, terminology/workflow norms,
   assumptions, unknowns/source gaps, edge cases, failure modes, risks, and measurement seeds; each

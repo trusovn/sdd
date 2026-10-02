@@ -504,6 +504,36 @@ def main() -> int:
           "focused unfamiliar-domain discovery eval exists",
           "evals/scenarios/specify-unfamiliar-domain-discovery must include prompt, rubric, and fixture")
 
+    # --- specify KPI contract: decisions remain measurable without an unexplained TBD ---
+    # The contract spans the template, drafting/Socratic guidance, critic, and a behaviour eval.
+    # Guard the load-bearing fields so a future simplification cannot silently regress to a
+    # baseline/target bullet list that lacks ownership or an actionable post-timebox decision.
+    print("== specify KPI contract ==")
+    spec_template = flat(ROOT / "skills" / "specify" / "templates" / "spec.md")
+    socratic_text = flat(ROOT / "skills" / "specify" / "references" / "socratic.md")
+    critic_text = flat(ROOT / "skills" / "specify" / "references" / "critic.md")
+    measurement_eval = ROOT / "evals" / "scenarios" / "specify-product-measurement-plan"
+    kpi_fields = ("metric", "why it matters", "source/event", "baseline", "target/timebox",
+                  "decision threshold", "owner", "when reviewed")
+
+    check(all(field in spec_template for field in kpi_fields),
+          "spec template carries the complete KPI decision contract",
+          "skills/specify/templates/spec.md lost KPI fields: "
+          + ", ".join(field for field in kpi_fields if field not in spec_template))
+    check("unknown" in socratic_text and "source/event" in socratic_text
+          and "owner+due" in socratic_text,
+          "Socratic KPI review rejects unexplained unknown baselines",
+          "specify Socratic guidance must require a source/event baseline plan plus owner+due")
+    check(all(field in critic_text for field in kpi_fields)
+          and "monitor" in critic_text,
+          "critic checks complete and actionable KPI rows",
+          "specify critic must check every KPI field and reject monitor-only thresholds")
+    check((measurement_eval / "prompt.txt").exists()
+          and (measurement_eval / "rubric.md").exists()
+          and (measurement_eval / "fixture" / "docs" / ".gitkeep").exists(),
+          "focused product-measurement eval exists",
+          "evals/scenarios/specify-product-measurement-plan must include prompt, rubric, and fixture")
+
     # --- the settings file: one canon, one create-anchor, one editor ---
     # Three invariants that only prose holds up, so the validator holds them mechanically:
     # (1) the README's copy of the template agrees with the canon key-for-key — README trims the

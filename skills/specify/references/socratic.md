@@ -4,14 +4,14 @@ Read [`../../_shared/socratic-loop.md`](../../_shared/socratic-loop.md) for the 
 
 ## Sections walked (in order)
 
-§4 User stories → §5 Acceptance criteria → §6 NFR → §7 KPIs. §1–§3 are drafted and shown but not per-item walked (they have no decision set — the user edits them inline if needed).
+§4 User stories → §5 Acceptance criteria → §6 NFR → §7 KPI rows. §1–§3 are drafted and shown but not per-item walked (they have no decision set — the user edits them inline if needed).
 
 ## Decision-types
 
 - **User story** (§4) — Approve / Edit / Drop / Save-as-OQ. Dropping a US that owns the only AC of a coverage type triggers the §5 coverage gate.
 - **Acceptance criterion** (§5) — the 4-state machine **plus a 5th option «Add another AC»** (user dictates a new AC; skill drafts it in business form and runs a one-question mini-batch on it). Dropping / OQ-migrating the **last AC of a retained §4 user story** fires the use-case floor below (regenerate an AC for that US).
 - **NFR row** (§6) — Approve / Edit (change the number or measurement) / Save-as-OQ (number is TBD, owner+due). A bare adjective («fast») is never Approvable — force a number or an OQ.
-- **KPI** (§7) — Approve / Edit / Drop. baseline=TBD forces an inline measurement plan or an OQ.
+- **KPI row** (§7) — Approve / Edit / Drop / Save-as-OQ. A row is not Approvable unless metric, why it matters, source/event, baseline, target/timebox, decision threshold, owner, and review timing are filled. An unknown or future-measured baseline forces a concrete source/event plan plus an OQ with owner+due; a bare `TBD` is never Approvable.
 
 ## Per-skill gate — §5 coverage floors (two, both re-checked after every resolution)
 
