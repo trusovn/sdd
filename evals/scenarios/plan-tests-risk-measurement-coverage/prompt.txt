@@ -1,0 +1,6 @@
+/sdd:plan-tests invoice-approval-guardrails --depth=easy
+
+Headless eval run — there is NO interactive user; never call AskUserQuestion. Follow the
+plan-tests skill exactly. The fixture contains spec.md, discovery.md, sad.md, tasks.json, .size,
+and .route. Use them as source truth, take sensible defaults, write the size-correct plan, and
+finish with the stage-handoff block.

@@ -40,6 +40,15 @@ The engine does **not** paste these into prompts — each agent (or the sequenti
 - `docs/architecture-map.md` (from `survey`, if present) — the existing system's conventions the new code must match (module wiring, error handling, IDs, tests, migrations; **for a `ui` surface, §Frontend / UI foundation — the design system / components / tokens / styling to reuse**) + the closest precedent to copy (including the **closest UI precedent** for a new screen). Saves the agents re-discovering the patterns.
 - `docs/design-system.md` + `docs/features/<slug>/ux-flows.md` + `docs/features/<slug>/screens.md` (when they exist) — the **`ui`-task reading list**: the design canon (tool, posture, tokens, component inventory), the user flows, and the per-state screen manifest the task builds to (see «`ui`-layer tasks» below).
 
+## Risk / measurement linkage from the test plan
+
+When the test plan contains `Risk coverage`, `Measurement readiness`, and `Implementation linkage`, load every open `RISK-NN` / `MEAS-NN` row before building the run-plan:
+
+- Attach a row naming a real `tasks.json` id to that task's RED/GATE brief.
+- An executable pre-release row marked `unassigned — update/split tasks before implement` is a hard planning gap: stop and point back to `tasks`/`plan-tests`; do not quietly choose a convenient task.
+- A rollout-monitoring, residual-risk, or deferred-seed row is not a fake test. Carry its evidence requirement, owner, and review timing into the final handoff for review/release follow-through.
+- If the plan has no such sections, continue with the existing AC-only behavior.
+
 ## Staged migrations → promote before running
 
 `data-model` stages each migration as `docs/features/<slug>/migrations/<NN>_<verb>_<entity>.up.sql` + `.down.sql` (feature-local ordinal) — **not** in the live `migrations/` tree, so a design-stage schema can't be applied to a real DB before the feature is built. The `layer: migration` task(s) own **promotion**:

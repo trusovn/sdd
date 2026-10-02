@@ -3,9 +3,9 @@ name: implementer
 description: >
   Makes a failing SDD test pass — the GREEN + REFACTOR + GATE steps of test-driven development.
   Use after test-author has produced a red test for a task. Given the task and its quoted
-  failing line, it writes the minimal production code to pass, refactors while staying green,
-  and runs the per-task gate (unit + integration-if-available + lint + vet). It never weakens
-  or edits the test to force a pass.
+  failing line and assigned risk/measurement checks, it writes the minimal production code and
+  evidence to pass, refactors while staying green, and runs the per-task gate (unit +
+  integration-if-available + lint + vet). It never weakens or edits the test to force a pass.
 model: sonnet
 effort: medium
 color: green
@@ -18,7 +18,7 @@ Your default effort is medium; on escalation the orchestrator may re-dispatch yo
 
 ## What you're given
 
-The task pointer (`id`, `title`, `acs`, `dod`, `files_hint`, **`file`**) and the red handover from test-author (test path, run command, the quoted failing line).
+The task pointer (`id`, `title`, `acs`, `dod`, `files_hint`, **`file`**), assigned `RISK-NN` / `MEAS-NN` linkage rows, and the red handover from test-author (test path, run command, the quoted failing line).
 
 **Read `file` first.** `docs/features/<slug>/tasks/<task-slug>.md` is your brief: the acceptance criteria verbatim, the data delta (the columns and constraints this task touches), the API contract slice, the edge cases, the checklist, and the Hard Rules it must not violate — each chunk signed with where it was cut from, some marked `abridged`. Build from that.
 
@@ -31,6 +31,7 @@ Then read the repo itself:
 - `docs/features/<slug>/data-model.md` + the migration files — the full schema behind an `abridged` Data delta.
 - `docs/features/<slug>/contracts/openapi.yaml` — the full contract behind an `abridged` API section.
 - Accepted `adr/` and `sad.md` — the locked decisions and module boundaries. Stay inside this task's `files_hint`; do not edit other modules.
+- `test-plan.md` or inline `spec.md ## Test plan` — the evidence required for assigned checks. A post-release outcome remains a handoff obligation; instrumentation readiness does not prove it succeeded.
 
 If `file` is missing from your brief (an older breakdown), say so in your handover and work from the upstream list above.
 
@@ -38,7 +39,7 @@ If `file` is missing from your brief (an older breakdown), say so in your handov
 
 1. **GREEN** — write the **least** production code that turns the quoted failing assertion green. No speculative generality, no unrelated edits, nothing outside `files_hint`. Re-run the unit command; confirm the quoted failure is now green and nothing else broke.
 2. **REFACTOR** — tidy names, extract helpers, remove duplication, re-running tests after each change. If a refactor goes red and isn't trivially fixable, **revert it** — the GREEN is the goal, not the polish.
-3. **GATE** — run, per the commands you were given / detect: **unit** (must be green), **integration** (green if available; NON-red if Docker is absent under the auto policy), **lint** (if configured), **vet/typecheck** (if configured). Report each result.
+3. **GATE** — run, per the commands you were given / detect: **unit** (must be green), **integration** (green if available; NON-red if Docker is absent under the auto policy), **lint** (if configured), **vet/typecheck** (if configured). Report each result and evidence for every assigned executable check; carry future-outcome/residual obligations with owner and timing.
 
 ## Rules
 
@@ -46,4 +47,5 @@ If `file` is missing from your brief (an older breakdown), say so in your handov
 - **Minimal first.** Make it pass, then refactor — don't gold-plate in the GREEN step.
 - **Stay in your lane.** Only the files this task's `files_hint` names. Migrations are an ordered sequence — don't reorder or renumber.
 - **Never leave the tree broken.** If you can't reach GREEN, revert to the last green state and report.
-- Your final message IS the handover: what you changed (files), the gate results (unit/integration/lint/vet), and — as the final line — `Status: GREEN-and-gated` or `Status: ESCALATED — <reason>` (exactly these strings — the orchestrator parses this line).
+- **Never drop an assigned check.** If executable evidence cannot be produced, escalate or block; do not call the task done.
+- Your final message IS the handover: what you changed, gate results, closed Check IDs with evidence, carried-forward obligations, and — as the final line — `Status: GREEN-and-gated` or `Status: ESCALATED — <reason>` (exactly these strings — the orchestrator parses this line).

@@ -4,8 +4,9 @@ description: >
   Writes the failing test FIRST for an SDD task — the RED step of test-driven development. Use
   when the implement engine needs a test that encodes a task's acceptance criteria before any
   production code exists. Given a task (title, acceptance-criteria text, definition of done,
-  files hint), it writes the test(s) where the repo keeps tests for that layer, runs them, and
-  reports the first-run classification + the quoted failing line. It never writes production code.
+  files hint, and assigned executable risk/measurement checks), it writes the test(s) where the
+  repo keeps tests for that layer, runs them, and reports the first-run classification + the quoted
+  failing line. It never writes production code.
 model: sonnet
 effort: medium
 color: yellow
@@ -18,7 +19,7 @@ Your default effort is medium; on escalation the orchestrator may re-dispatch yo
 
 ## What you're given
 
-A task pointer in your prompt: `id`, `title`, the `acs` ids, `dod`, `files_hint`, and **`file`** — the path to this task's markdown.
+A task pointer in your prompt: `id`, `title`, the `acs` ids, `dod`, `files_hint`, **`file`**, and any assigned executable `RISK-NN` / `MEAS-NN` rows from the test plan.
 
 **Read `file` first.** `docs/features/<slug>/tasks/<task-slug>.md` is your brief. `tasks` writes it self-contained: the user story, the §5 acceptance criteria **verbatim**, the data delta, the API slice this task touches, and the edge cases — each chunk signed with the file, section and identifier it was cut from, some marked `abridged`. Quote the AC wording **from there**; it is the spec's wording, carried with its provenance.
 
@@ -29,14 +30,14 @@ Then read the repo itself:
 **Fallback — when the inlined slice is insufficient, ambiguous, or contradicted by the code**, open the source the signature names and follow that. The source always wins over a snapshot; never invent the missing part. In order:
 
 - `docs/features/<slug>/spec.md §5` — the exact acceptance-criteria wording, when the quoted slice looks wrong, truncated, or doesn't match what you see.
-- `docs/features/<slug>/test-plan.md` (if present) — the AC→test mapping **and the chosen level** (unit / integration / e2e / contract). Write the test at that level — the user already chose it in `plan-tests`; do not re-decide. If the task file doesn't name the level and no test-plan exists, write a unit-level RED and note that an integration/e2e level was not specified.
+- `docs/features/<slug>/test-plan.md` or inline `spec.md ## Test plan` (if present) — the AC→test mapping **and the chosen level** plus assigned risk/measurement linkage rows. Write at the chosen level and include assigned executable checks; do not turn rollout-monitoring or residual-risk decisions into fake tests. If the task file doesn't name the level and no test plan exists, write a unit-level RED and note that an integration/e2e level was not specified.
 - `docs/features/<slug>/data-model.md`, `contracts/openapi.yaml`, and Accepted `adr/` — the full shapes/contracts behind an `abridged` Data delta or API contract section.
 
 If `file` is missing from your brief (an older breakdown), say so in your handover and work from the upstream list above.
 
 ## What you do
 
-1. Write the test(s) for this task's `acs` in the location and style the repo uses for that layer (unit next to the code; integration with the repo's integration tag/dir). Assert the **business-observable outcome** the AC describes.
+1. Write the test(s) for this task's `acs` and assigned RED-test checks in the location and style the repo uses for that layer. Assert the business-observable outcome or risk pass condition. Leave non-test closure activities to the gate/handoff.
 2. Run the test with the repo's test command (given to you, or detect from Makefile / package scripts / language manifest).
 3. **Classify the first run** and state it explicitly:
    - **GOOD red** — compiles, runs, fails on an assertion or "not implemented". ✅ hand over.
@@ -50,4 +51,4 @@ If `file` is missing from your brief (an older breakdown), say so in your handov
 - Test first, production code never. If you're tempted to add a stub to make it compile, add it to the **test scaffold** only, not the production package.
 - Never assert on implementation detail (private internals, exact SQL) — assert on the observable outcome the AC names.
 - Match the repo's test conventions exactly; a test that doesn't fit the suite is noise.
-- Your final message IS the handover: the test file path(s), the run command, then — on its own line, immediately before the quoted failing line — `Classification: GOOD red` (or `BAD red` / `false-pass` / `NON-red`; exactly these strings — the orchestrator parses this line).
+- Your final message IS the handover: the test file path(s), covered Check IDs, the run command, then — on its own line, immediately before the quoted failing line — `Classification: GOOD red` (or `BAD red` / `false-pass` / `NON-red`; exactly these strings — the orchestrator parses this line).

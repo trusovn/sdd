@@ -534,6 +534,56 @@ def main() -> int:
           "focused product-measurement eval exists",
           "evals/scenarios/specify-product-measurement-plan must include prompt, rubric, and fixture")
 
+    # --- plan-tests risk + measurement continuity: promises reach executable/release evidence ---
+    # Risk/KPI rows are useful only if plan-tests distinguishes pre-release readiness from future
+    # outcomes and implement refuses to silently drop executable rows that have no task owner.
+    print("== plan-tests risk and measurement continuity ==")
+    plan_tests_text = flat(ROOT / "skills" / "plan-tests" / "SKILL.md")
+    test_plan_template = flat(ROOT / "skills" / "plan-tests" / "templates" / "test-plan.md")
+    implement_text = flat(ROOT / "skills" / "implement" / "SKILL.md")
+    implement_inputs = flat(ROOT / "skills" / "implement" / "references" / "inputs.md")
+    test_author_text = flat(ROOT / "agents" / "test-author.md")
+    implementer_text = flat(ROOT / "agents" / "implementer.md")
+    risk_measurement_eval = ROOT / "evals" / "scenarios" / "plan-tests-risk-measurement-coverage"
+
+    risk_sources = ("discovery.md §9", "sad.md §11", "spec.md §6.1")
+    check(all(source in plan_tests_text for source in risk_sources)
+          and "not test-covered" in plan_tests_text
+          and "residual-risk owner" in plan_tests_text,
+          "plan-tests traces retained risks or records owner-backed residual risk",
+          "skills/plan-tests/SKILL.md must cover discovery/SAD/security risks and permit only "
+          "an explicit owner-backed not-test-covered rationale")
+    kpi_fields = ("metric", "source/event", "baseline plan", "target/timebox",
+                  "decision threshold", "owner", "review timing")
+    check(all(field in plan_tests_text for field in kpi_fields)
+          and "pre-release readiness check" in plan_tests_text
+          and "post-release outcome review" in plan_tests_text,
+          "plan-tests separates KPI signal readiness from post-release outcomes",
+          "skills/plan-tests/SKILL.md must preserve every KPI field and distinguish pre-release "
+          "readiness from post-release outcome review")
+    template_sections = ("## risk coverage", "## measurement readiness", "## implementation linkage")
+    check(all(section in test_plan_template for section in template_sections)
+          and "risk-nn" in test_plan_template and "meas-nn" in test_plan_template
+          and "pre-release readiness check" in test_plan_template
+          and "post-release outcome review" in test_plan_template,
+          "test-plan template carries risk, measurement, and linkage tables",
+          "skills/plan-tests/templates/test-plan.md lost one or more continuity sections/columns")
+    check("sdd-check" in implement_text
+          and "unassigned — update/split tasks before implement" in implement_text
+          and "hard planning gap" in implement_inputs
+          and "risk-nn" in test_author_text and "meas-nn" in test_author_text
+          and "assigned executable check" in implementer_text,
+          "implement closes task-linked checks and blocks unassigned executable gaps",
+          "implement and its RED/GREEN agents must consume SDD-Check rows and block rather than "
+          "drop unassigned pre-release checks")
+    check((risk_measurement_eval / "prompt.txt").exists()
+          and (risk_measurement_eval / "rubric.md").exists()
+          and (risk_measurement_eval / "fixture" / "docs" / "features"
+               / "invoice-approval-guardrails" / "spec.md").exists(),
+          "focused plan-tests risk/measurement eval exists",
+          "evals/scenarios/plan-tests-risk-measurement-coverage must include prompt, rubric, "
+          "and a feature fixture")
+
     # --- the settings file: one canon, one create-anchor, one editor ---
     # Three invariants that only prose holds up, so the validator holds them mechanically:
     # (1) the README's copy of the template agrees with the canon key-for-key — README trims the

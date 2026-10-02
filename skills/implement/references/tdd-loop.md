@@ -4,7 +4,7 @@ Every task runs `SELECT → RED → GREEN → REFACTOR → GATE → COMMIT`. Thi
 
 ## SELECT
 
-Pick the next task whose `deps` are all `done`. In sequential mode that's the topo order; in parallel modes the orchestrator hands it out. **Read the task file first** — `tasks.json`'s `file` field, `docs/features/<slug>/tasks/<task-slug>.md`: it carries the §5 acceptance criteria verbatim, the data delta, the API slice and the edge cases, each signed with its source. `spec.md §5` and the relevant `test-plan.md` rows are the **fallback**, opened when a slice is insufficient, ambiguous, or contradicted by the code ([`./inputs.md`](./inputs.md)); a task with no `file` falls back to them outright. Know, before writing anything, what observable outcome the test will assert.
+Pick the next task whose `deps` are all `done`. In sequential mode that's the topo order; in parallel modes the orchestrator hands it out. **Read the task file first** — `tasks.json`'s `file` field, `docs/features/<slug>/tasks/<task-slug>.md`: it carries the §5 acceptance criteria verbatim, the data delta, the API slice and the edge cases, each signed with its source. `spec.md §5` and the relevant `test-plan.md` AC rows are fallback context when a slice is insufficient, ambiguous, or contradicted by the code ([`./inputs.md`](./inputs.md)). Open `test-plan.md` linkage rows assigned to this task regardless: they are additional closure obligations, not reconstructed task context. Know before writing whether each assigned row needs a RED test, gate/release evidence, or explicit carry-forward because its outcome is post-release.
 
 ## RED — write the failing test first
 
@@ -54,9 +54,11 @@ When `auto_commit: per_task`, commit only this task's files with a message like:
 SDD-Task: T3
 SDD-AC: AC-02
 SDD-AC: AC-04
+SDD-Check: RISK-01
+SDD-Check: MEAS-01
 ```
 
-One `SDD-AC` trailer per AC the task satisfied; the `SDD-Task` trailer ties the commit to `tasks.json`. Then mark the task `done` in `tracker.md`. (`per_phase` batches a phase's tasks into one commit; `off` leaves committing to the user but still updates the tracker.)
+One `SDD-AC` trailer per AC the task satisfied; one `SDD-Check` trailer per executable risk/measurement row closed by the task; the `SDD-Task` trailer ties the commit to `tasks.json`. Record the evidence in the task handoff. Then mark the task `done` in `tracker.md`. (`per_phase` batches a phase's tasks into one commit; `off` leaves committing to the user but still updates the tracker.)
 
 **Compile-coupled lane exception.** Tasks in one compile-coupled lane (a shared-contract change + its implementer(s), marked by `tasks` via the shared contract file in `files_hint`) cannot each be committed green alone — the contract change breaks every implementer at compile time. They run **one shared GATE and one commit**: the commit carries an `SDD-Task` trailer **per task** and all of their `SDD-AC` trailers together, and the body names the coupling (e.g. «compile-coupled: T3 interface change + T4 implementation»). This is a sanctioned exception to task-scoped commits, not a license to batch unrelated tasks.
 
