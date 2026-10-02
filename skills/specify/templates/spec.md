@@ -11,6 +11,7 @@ feature_size: "<from classify-size: XS/S/M/L/XL>"
 <!-- instruction: one-line links to inputs used.
 > **Glossary:** [CONTEXT](./CONTEXT.md) (if present)
 > **Reference module / docs / channels used:** name the specific paths/queries read in step 5, or «None — only the interview + CONTEXT».
+> **Discovery:** [discovery.md](./discovery.md) if the discovery gate fired; otherwise «Not triggered — <reason>».
 Do not mention competitive-research or ideation scratch work here — those inform §1, they are not inputs to cite. -->
 
 ## 1. Context

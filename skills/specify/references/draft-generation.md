@@ -6,8 +6,27 @@ The authoritative format for each section is the `<!-- instruction -->` comment 
 
 1. **`CONTEXT.md` `## Glossary`** — canonical for role names + domain terms. If anything contradicts it, the glossary wins.
 2. **The interview** (step 2 capture + deep-dive) — the problem, the trigger, success criteria, constraints.
-3. **Ideation output** (step 3, when the depth dial runs it — medium/hard) — the chosen approach + its rationale → §1 ¶3.
-4. **Channel outputs** (step 5) — reference-module patterns, doc/MCP/KB quotes → §1 ¶4 traceability only.
+3. **The `discovery.md` draft** (when the discovery gate fires, including any pre-existing discovery) — verified facts, terminology/workflow norms, assumptions, unknowns/source gaps, edge cases, failure modes, risks, and measurement seeds.
+4. **Ideation output** (step 3, when the depth dial runs it — medium/hard) — the chosen approach + its rationale → §1 ¶3.
+5. **Channel outputs** (step 5) — reference-module patterns, doc/MCP/KB quotes → §1 ¶4 traceability only.
+
+## Discovery-to-spec contract
+
+`discovery.md` is durable evidence, not an appendix that may be ignored. Carry each relevant result
+into the current eight-section spec schema:
+
+- verified facts, terminology, and workflow norms → §1 Context;
+- external constraints and scope boundaries → §1 Context, §3 Non-goals, or §6 NFR/security;
+- edge cases and required business responses → §5 Acceptance criteria where observable;
+- failure modes and risks → §5, §6, §6.1, or §8 according to whether they are behavior, quality,
+  security/privacy, or unresolved decisions;
+- measurement/KPI seeds → §7 Metrics/KPIs;
+- assumptions, unknowns, and `RESEARCH_LIMITED` source gaps → §1 as explicit uncertainty or §8
+  with an owner and due point.
+
+Do not cite a discovery assumption as fact. Do not paste every finding mechanically: include the
+findings that change the problem, scope, observable behavior, constraints, risk, measurement, or an
+unresolved decision.
 
 ## §5 acceptance-criteria contract
 
@@ -44,3 +63,5 @@ The product-level sections must not name a **concrete technology** — a specifi
 - §3 Non-goals each carry a reason (no inventing).
 - §1 ¶3 states the committed approach without losing the vector.
 - §5 has ≥1 of each coverage type and 0 forbidden tokens (self-scan; the critic + regex are the backstop).
+- When discovery fired, every relevant discovery result maps to a spec section, and no
+  `RESEARCH_LIMITED` item is presented as verified fact.

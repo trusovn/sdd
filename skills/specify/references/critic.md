@@ -4,11 +4,12 @@ Read [`../../_shared/critic.md`](../../_shared/critic.md) for the canonical disp
 
 ## Placeholders
 
-- **`{{ARTIFACT_NAME}}`** = "Product spec (context / goals / user stories / acceptance criteria / NFRs / KPIs)".
-- **`{{DRAFT}}`** = the in-memory `spec.md` draft.
+- **`{{ARTIFACT_NAME}}`** = "Product spec plus conditional domain discovery".
+- **`{{DRAFT}}`** = the in-memory `spec.md` draft plus the in-memory `discovery.md` draft when the discovery gate fired.
 - **`{{EDITS_LOG}}`** = the step-7 edits-log.
 - **`{{UPSTREAM_FILES}}`** (the critic Reads these itself):
   - `docs/features/<slug>/CONTEXT.md` — canonical glossary (roles, domain terms).
+  - `docs/features/<slug>/discovery.md` — only when it existed before this run; a new discovery draft is inlined in `{{DRAFT}}` instead.
   - any reference module / doc the user named in step 5 (paths only).
 
 ## F5 structural floor (this artifact)
@@ -17,6 +18,10 @@ Read [`../../_shared/critic.md`](../../_shared/critic.md) for the canonical disp
 - §5 holds ≥1 AC of each of the 5 coverage types **after** drops + OQ-migrations.
 - §6 NFR rows all carry a numeric target + measurement (no adjectives, no lone TBD).
 - §8 Open Questions has a row for every `save_as_oq` with owner + due.
+- When discovery fired, its draft distinguishes verified facts, terminology/workflow norms,
+  assumptions, unknowns/source gaps, edge cases, failure modes, risks, and measurement seeds; each
+  authoritative/current claim is cited or marked `RESEARCH_LIMITED`; relevant findings visibly
+  inform the spec rather than remaining dead documentation.
 
 ## F6 specialization — forbidden-token leak (the load-bearing check)
 

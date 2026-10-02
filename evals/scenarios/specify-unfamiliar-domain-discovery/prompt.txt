@@ -1,0 +1,10 @@
+/sdd:specify telehealth-minor-consent --depth=easy
+
+Headless eval run - there is NO interactive user; never call AskUserQuestion. The raw idea is a
+scheduling and consent-check feature for telehealth visits involving minors across US states, so
+clinic staff avoid booking visits that cannot legally proceed without guardian consent or required
+documentation. This is an unfamiliar, regulated, safety- and privacy-sensitive domain whose rules
+may vary by jurisdiction and change over time. Take sensible defaults and record assumptions (size:
+1-2 PRs over several days, existing scheduling module, staff workflow and audit records affected,
+no public marketing page). If authoritative sources are unavailable, write RESEARCH_LIMITED rather
+than inventing facts or citations. Write the required artifacts and print the stage-handoff block.

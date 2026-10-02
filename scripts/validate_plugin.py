@@ -452,6 +452,58 @@ def main() -> int:
               f"{rel} mentions the .route artifact",
               f"{rel} never mentions '.route' — it writes or resolves the route and must name the artifact")
 
+    # --- specify domain discovery: risk-gated evidence remains separate from ideation ---
+    # This workflow spans an agent, a conditional template, the specify spine, and its drafting
+    # reference. A missing link can leave discovery silently skipped or written but never consumed.
+    print("== specify domain discovery ==")
+    specify_text = flat(ROOT / "skills" / "specify" / "SKILL.md")
+    investigator = ROOT / "agents" / "domain-investigator.md"
+    discovery_template = ROOT / "skills" / "specify" / "templates" / "discovery.md"
+    draft_generation = ROOT / "skills" / "specify" / "references" / "draft-generation.md"
+    discovery_eval = ROOT / "evals" / "scenarios" / "specify-unfamiliar-domain-discovery"
+
+    check(investigator.exists() and discovery_template.exists(),
+          "domain-investigator and discovery.md template exist",
+          "specify domain discovery requires agents/domain-investigator.md and "
+          "skills/specify/templates/discovery.md")
+    trigger_terms = ("unfamiliar", "regulated", "safety", "security", "privacy",
+                     "operationally high-risk", "external rules", "standards", "regulations",
+                     "current authoritative facts", "materially change product scope")
+    check(all(term in specify_text for term in trigger_terms),
+          "specify carries every domain discovery trigger",
+          "skills/specify/SKILL.md lost one or more discovery triggers: "
+          + ", ".join(term for term in trigger_terms if term not in specify_text))
+    check("any depth" in specify_text and "sdd:domain-investigator" in specify_text,
+          "risk-gated domain investigation runs at any depth",
+          "specify must dispatch sdd:domain-investigator at any depth when discovery fires")
+
+    investigator_text = flat(investigator) if investigator.exists() else ""
+    check("not the competitive `researcher`" in investigator_text
+          and "authoritative" in investigator_text and "research_limited" in investigator_text,
+          "domain-investigator is authoritative-source focused and non-competitive",
+          "domain-investigator must remain distinct from competitive researcher and preserve RESEARCH_LIMITED")
+
+    template_text = discovery_template.read_text().lower() if discovery_template.exists() else ""
+    discovery_sections = ("verified domain facts", "terminology and workflow norms", "assumptions",
+                          "unknowns and source gaps", "authoritative sources", "edge cases",
+                          "failure modes", "risk register", "measurement / kpi seeds")
+    check(all(section in template_text for section in discovery_sections)
+          and "research_limited" in template_text,
+          "discovery template preserves facts, uncertainty, risks, and measurements",
+          "discovery.md template lost required content: "
+          + ", ".join(section for section in discovery_sections if section not in template_text))
+
+    drafting_text = draft_generation.read_text() if draft_generation.exists() else ""
+    check("Discovery-to-spec contract" in drafting_text
+          and all(section in drafting_text for section in ("§1", "§3", "§5", "§6", "§7", "§8")),
+          "discovery findings feed the current spec schema",
+          "draft-generation.md must map discovery findings into the current spec instead of leaving dead documentation")
+    check((discovery_eval / "prompt.txt").exists()
+          and (discovery_eval / "rubric.md").exists()
+          and (discovery_eval / "fixture" / "docs" / ".gitkeep").exists(),
+          "focused unfamiliar-domain discovery eval exists",
+          "evals/scenarios/specify-unfamiliar-domain-discovery must include prompt, rubric, and fixture")
+
     # --- the settings file: one canon, one create-anchor, one editor ---
     # Three invariants that only prose holds up, so the validator holds them mechanically:
     # (1) the README's copy of the template agrees with the canon key-for-key — README trims the
