@@ -74,7 +74,13 @@ a skill's *protocol* (gates, routing, artifact shape), run the closest scenario 
 ./evals/run.sh design-gate-refusal    # or: specify-happy-path, classify-size
 ```
 
-See [`evals/README.md`](./evals/README.md) for prerequisites and how to add a scenario.
+See [`evals/README.md`](./evals/README.md) for prerequisites and how to add a scenario. Protocol
+changes to `ux-flows` additionally require the focused scenarios (`ux-flows-code-mode`,
+`ux-flows-interaction-decision`, `ux-flows-spec-conflict`) **plus** the manual medium-depth
+interactive check — the headless harness cannot answer `AskUserQuestion`, so verifying that the
+skill asks about unresolved UX behavior (never «Accept / Fix / Save as OQ / Drop this flow?» for
+an already-resolved flow) is a human-run regression criterion documented in
+[`evals/README.md`](./evals/README.md#manual-medium-depth-regression-check-not-automatable).
 
 ## Releasing
 

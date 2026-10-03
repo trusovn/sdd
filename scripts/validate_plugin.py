@@ -782,6 +782,57 @@ def main() -> int:
           "focused tasks-to-plan-tests routing eval exists",
           "evals/scenarios/tasks-plan-tests-routing must include prompt, rubric, and a feature fixture")
 
+    # --- ux-flows interaction decisions: downstream consumes the UXD ledger, never edits it ---
+    # UXD-NN rows are resolved user-experience evidence, not architecture decisions; spec.md stays
+    # the authority on conflict; and sequences/screens/plan-tests preserve resolved interaction
+    # behavior instead of re-inventing transitions. Guard the four spines' contract phrases so a
+    # future edit can't silently drop the authority boundary or the no-reinvention rule.
+    print("== ux-flows interaction decisions ==")
+    design_text_uxd = flat(ROOT / "skills" / "design" / "SKILL.md")
+    sequences_text_uxd = flat(ROOT / "skills" / "sequences" / "SKILL.md")
+    screens_text_uxd = flat(ROOT / "skills" / "screens" / "SKILL.md")
+    plan_tests_text_uxd = flat(ROOT / "skills" / "plan-tests" / "SKILL.md")
+
+    check("interaction decisions" in design_text_uxd
+          and "resolved user-experience evidence" in design_text_uxd
+          and "spec.md" in design_text_uxd and "higher authority" in design_text_uxd
+          and "surface" in design_text_uxd and "never" in design_text_uxd,
+          "design consumes UXD rows as resolved UX evidence with spec as higher authority, "
+          "surfacing conflicts",
+          "skills/design/SKILL.md must read the UXD ledger as resolved user-experience evidence, "
+          "keep spec.md the higher authority, and surface conflicts — never silently override")
+    check("uxd-nn" in sequences_text_uxd and "automatic progression" in sequences_text_uxd
+          and "do not re-introduce a transition" in sequences_text_uxd,
+          "sequences preserves UXD navigation/continuation pins and never re-introduces "
+          "excluded transitions",
+          "skills/sequences/SKILL.md must preserve UXD-NN navigation/continuation pins and forbid "
+          "re-introducing a transition ux-flows explicitly excluded")
+    check("must not invent new automatic navigation" in screens_text_uxd,
+          "screens never invents automatic navigation or automatic next-step screens",
+          "skills/screens/SKILL.md must keep the rule that screens details the resolved UX-flow "
+          "inventory and must not invent automatic navigation / automatic next-step screens")
+    check("preserve resolved interaction behavior" in plan_tests_text_uxd
+          and "logical next steps" in plan_tests_text_uxd,
+          "plan-tests preserves resolved interaction behavior when deriving e2e-through-UI paths",
+          "skills/plan-tests/SKILL.md must preserve resolved interaction behavior and forbid "
+          "extending the UX flow with logical next steps")
+
+    ux_flows_eval = ROOT / "evals" / "scenarios" / "ux-flows-interaction-decision"
+    ux_flows_conflict_eval = ROOT / "evals" / "scenarios" / "ux-flows-spec-conflict"
+    check((ux_flows_eval / "prompt.txt").exists()
+          and (ux_flows_eval / "rubric.md").exists()
+          and (ux_flows_eval / "fixture" / "docs" / "features"
+               / "project-workspace" / "spec.md").exists(),
+          "focused ux-flows interaction-decision eval exists",
+          "evals/scenarios/ux-flows-interaction-decision must include prompt, rubric, and a "
+          "feature fixture")
+    check((ux_flows_conflict_eval / "prompt.txt").exists()
+          and (ux_flows_conflict_eval / "rubric.md").exists()
+          and (ux_flows_conflict_eval / "fixture" / "docs" / "features"
+               / "project-workspace" / "spec.md").exists(),
+          "focused ux-flows spec-conflict eval exists",
+          "evals/scenarios/ux-flows-spec-conflict must include prompt, rubric, and a feature fixture")
+
     # --- the settings file: one canon, one create-anchor, one editor ---
     # Three invariants that only prose holds up, so the validator holds them mechanically:
     # (1) the README's copy of the template agrees with the canon key-for-key — README trims the

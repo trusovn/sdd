@@ -44,9 +44,11 @@ built screens against this manifest.
 - `<slug>` — feature slug.
 - **Gate (hard-refuse if missing):** `docs/features/<slug>/sad.md` — `target_surfaces` + the §6
   branches feed the state derivation. Absent → STOP: «run `design <slug>` first».
-- (Expected) `docs/features/<slug>/ux-flows.md` — the SCR inventory this manifest details.
-  **Absent → soft**: offer `/sdd:ux-flows <slug>` first, or derive the inventory from spec §4 +
-  the SAD with a **noted gap** in the manifest — never a silent invention.
+- (Expected) `docs/features/<slug>/ux-flows.md` — the SCR inventory this manifest details, plus
+  any `UXD-NN` interaction decisions that imply a flow-significant state (e.g. a resolved
+  post-success destination may carry its own state row). **Absent → soft**: offer
+  `/sdd:ux-flows <slug>` first, or derive the inventory from spec §4 + the SAD with a **noted
+  gap** in the manifest — never a silent invention.
 - (Expected) `docs/design-system.md` — the `tool` + the component inventory. Absent → `code` mode
   + recommend `/sdd:design-system` in the handoff.
 - (Read) `docs/features/<slug>/contracts/` (error responses → error states), `spec.md` §5 (ACs →
@@ -61,7 +63,12 @@ built screens against this manifest.
    `interview_depth` (else medium; `--depth=` wins) — it governs the per-screen confirm volume.
 2. **Derive states per screen.** For each `SCR-NN` from the inventory, list the **full state set**:
    `default` + every state the ACs / §6 branches / contract errors imply; a state class that
-   genuinely doesn't apply gets one explicit `N/A: <reason>` row. Pick the components per state —
+   genuinely doesn't apply gets one explicit `N/A: <reason>` row. **`screens` details states for
+   the resolved UX-flow inventory — it must not invent new automatic navigation or automatic
+   next-step screens absent from the resolved UX flow.** (So Environment creation may exist as a
+   separate, reachable `SCR-NN` screen, but it must not become the automatic Project-success exit
+   unless `ux-flows.md` says so; a resolved `UXD-NN` pin like «no auto-open after save» stays
+   no-auto-open in the state derivation.) Pick the components per state —
    **from the design-system inventory by name**; a `NEW: <name>` only when no existing primitive
    fits, with the one-line why. Confirm per screen Socratically (medium/hard: one
    `AskUserQuestion` per screen — Accept / Fix / Save-as-OQ / Drop; easy: derive + ledger, ask
@@ -94,7 +101,8 @@ built screens against this manifest.
   the derived state table, components reuse-first (`NEW:` only justified), §New components filled
   or explicitly «None».
 - States are **derived** — every error/empty state traces to an AC, a §6 branch, or a contract
-  error response; nothing invented, nothing silently missing.
+  error response; nothing invented, nothing silently missing, and no automatic navigation or
+  automatic next-step screen appears that the resolved UX flow doesn't record.
 - For `figma`/`pencil`: every state has its node source-ref; for `code`: the wireframes are inline.
 - The manifest is the only thing downstream needs — `tasks`/`implement`/`review` never open the
   raw design file.
@@ -105,6 +113,10 @@ built screens against this manifest.
   the error/empty derivation is the point of this stage.
 - **Inventing states with no source.** Every non-default state traces to an AC / branch / contract
   error; a state with no origin is scope creep in a costume.
+- **Inventing automatic navigation or an automatic next-step screen** the resolved UX flow never
+  says exists — a post-success exit that `ux-flows.md` explicitly excluded, or a screen promoted
+  to an automatic continuation, is exactly the silent flow rewrite this stage must not do. A
+  screen can only ever be reachable, not auto-triggered, unless the resolved flow records it.
 - **Hand-rolling a component the inventory already has** — the reuse rule this pipeline exists to
   enforce; `NEW:` requires the why-no-primitive-fits line.
 - **Blocking on a missing MCP.** `code` mode is always available — degrade with a named

@@ -214,7 +214,7 @@ never a change to *what* gets covered:
 | **Judgment model & effort** | which model tier the judgment agents (reviewer/critic/devils-advocate/strategist/analyst) run at; L/XL escalates critical verifications to `effort: xhigh` | `/sdd:config` (writes `judgment_model`, `model_<role>`, `effort_<role>`) | [`agent-roster.md`](./skills/_shared/agent-roster.md) |
 | **Route** (quick / standard / full) | how aggressively optional stages (clarify/sequences/data-model/api) auto-skip, and whether required `plan-tests` stays lightweight inline (`quick`) or runs normally | `.route`, defaulted by size (XS/S → quick, M → standard, L/XL → full) and confirmed at `classify-size` | [`size-matrix.md`](./skills/_shared/size-matrix.md) |
 
-No dial weakens diagram presentation (always confirmed **in prose**, written to file, never
+No dial weakens diagram presentation (always presented **in prose**, written to file, never
 dumped raw — [`diagram-presentation.md`](./skills/_shared/diagram-presentation.md)) or acceptance-criteria
 coverage (every spec §4 story + §5 AC traced end-to-end, `easy`/XS just asks fewer questions).
 
