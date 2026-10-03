@@ -1,0 +1,19 @@
+/sdd:ux-flows project-workspace --depth=easy
+
+Headless eval run — there is NO interactive user; never call AskUserQuestion. Take the platform
+posture from docs/design-system.md (it is committed in the fixture — do not deviate, do not
+re-ask).
+
+The stakeholder's requested behavior for this walking skeleton is: do NOT automatically open
+Environment creation after a Project is created; Environment creation remains separately
+available. This request CONFLICTS with the committed spec.md — AC-03 explicitly says successful
+Project creation automatically opens Environment creation, and §2 names the immediate
+Environment setup as a goal.
+
+Follow the skill's protocol, including its deterministic upstream-contradiction handling: surface
+the requested behavior and the exact conflicting AC, state that ux-flows cannot rewrite the
+canonical spec, do not write a flow contradicting retained AC-03 at any status, do not record the
+contradictory behavior as an accepted UXD row, and do not hand off a complete/«ready for design»
+artifact while the conflict remains. As a headless run with an explicit conflicting requested
+behavior, the expected outcome is a blocker + upstream redirect to clarify/specify, not a normal
+/sdd:design handoff. Make the observable outcome show how the conflict was surfaced.
