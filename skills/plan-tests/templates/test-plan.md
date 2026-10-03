@@ -80,6 +80,9 @@ feature_size: "<XS|S|M|L|XL>"
 
 <!-- Every important spec.md §7 KPI appears here. Pre-release proves the signal can be collected; -->
 <!-- post-release evaluates the product outcome. Do not claim the latter from instrumentation alone. -->
+<!-- If §7 carries the sourced measurement N/A waiver: mirror it — -->
+<!-- N/A: measurement waived at spec — <reason> (source: <spec §ref>); revisit OQ §8 carries owner + due. -->
+<!-- Never fabricate MEAS rows for a waived §7. -->
 
 | Check ID | Metric | Source/event | Baseline plan | Target/timebox | Decision threshold | Pre-release readiness check | Post-release outcome review | Owner / review timing |
 |---|---|---|---|---|---|---|---|---|

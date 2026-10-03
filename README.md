@@ -138,7 +138,7 @@ And **`ux-flows`/`screens` auto-skip** for backend-only work, no confirmation ne
 
 | # | Skill | What it does | Reads → Produces |
 |---|---|---|---|
-| 1 | **specify** | Interviews you to capture the idea, writes the product spec + acceptance criteria, and risk-gates authoritative domain discovery separately from competitive research | *your idea*, `architecture-map.md` → `spec.md` (+ `discovery.md` when triggered) |
+| 1 | **specify** | Interviews you to capture the idea, writes the product spec + acceptance criteria, and risk-gates authoritative domain discovery separately from competitive research. When the scenario type makes numbers not yet meaningful (walking skeleton, spike), §6/§7 targets resolve to a sourced `Measurement: N/A` + revisit question instead of fabricated metrics | *your idea*, `architecture-map.md` → `spec.md` (+ `discovery.md` when triggered) |
 | 2 | **clarify** | Sweeps the spec for ambiguities (a devil's-advocate pass), closes or defers each | `spec.md` → tightened `spec.md` |
 | 3 | **ux-flows** | *UI features only (auto-skipped otherwise):* derives one user flow per UI-touching user story (happy + AC-driven error branches) + the `SCR-NN` screen inventory — always markdown+mermaid, whatever the design tool | `spec.md`, `design-system.md` → `ux-flows.md` |
 | 4 | **design** | **Matches the feature to your existing architecture** + **declares the target surfaces** (reading `ux-flows.md` as evidence), writes the Arc42 SAD + C4 + ADRs | `spec.md` (+ `ux-flows.md`, `CONTEXT.md` if present) → `sad.md`, `adr/*` |

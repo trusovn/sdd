@@ -17,7 +17,8 @@ target_surfaces: []  # filled in §4 — subset of: backend-service | web-fronte
 
 <!-- 🎯 Why: durable memory of «what + the three dominant qualities + who cares». A year from
      now nobody recalls which three qualities were critical for this system.
-     📋 Write: 1 ¶ intent + 3 lines of top-3 quality goals + a stakeholders table.
+     📋 Write: 1 ¶ intent + top-3 quality goals (one per spec §6 aspect not waived by a sourced
+     measurement N/A — ≥1, never padded to 3 with invented qualities) + a stakeholders table.
      ¶4 is the override slot — critic `Override` resolutions emit «Decision override: <headline>
      — rationale: <reason>» bullets here so downstream skills see the deliberate choice. -->
 
@@ -249,13 +250,16 @@ ADR files live under `docs/features/<slug>/adr/NNNN-<title>.md`.
 ## 10. Quality requirements
 
 <!-- 🎯 Why: the QUALITY TREE — take a goal from §1 and break it into concrete leaves: tests,
-     metrics, configs, drills. ⭐ Without §10, §1 is a manifesto. With §10 each declaration maps
-     to something PROVABLE.
-     📋 Write: per §1 goal — When / Then / How-verify. Numbers from spec §6 NFR VERBATIM (don't
-     round ≤250ms to ≤300ms — that's a critic F6 hit).
-     📌 e.g. «p95 ≤ 500 ms on a block update, verified by a 100 req/s load test». -->
+      metrics, configs, drills. ⭐ Without §10, §1 is a manifesto. With §10 each declaration maps
+      to something PROVABLE.
+      📋 Write: per §1 goal — When / Then / How-verify. Numbers from spec §6 NFR VERBATIM (don't
+      round ≤250ms to ≤300ms — that's a critic F6 hit). A §6 aspect waived by a sourced
+      measurement N/A → qualitative scenario against the spec's intent + the §11 revisit row,
+      never a minted number. One scenario per §1 quality goal — if the spec's §6 keeps fewer
+      than 3 aspects, fewer than 3 QG blocks is correct, not incomplete.
+      📌 e.g. «p95 ≤ 500 ms on a block update, verified by a 100 req/s load test». -->
 
-Each top-3 goal from §1 expanded into a full scenario:
+Each quality goal from §1 expanded into a full scenario (one block per §1 goal — no padding):
 
 **QG-1. <quality attribute>**
 - **When:** <trigger condition>
@@ -271,6 +275,8 @@ Each top-3 goal from §1 expanded into a full scenario:
 - **When:** <trigger>
 - **Then:** <expected>
 - **How verify:** <how>
+
+<!-- Keep only as many QG blocks as §1 declares quality goals (see §1's instruction). -->
 
 ## 11. Risks and technical debt
 

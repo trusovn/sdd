@@ -1,0 +1,11 @@
+/sdd:specify order-pipeline-walking-skeleton --depth=easy
+
+Headless eval run — there is NO interactive user; never call AskUserQuestion. The raw idea to
+capture: this is a WALKING SKELETON — the goal is only to prove an order can travel end-to-end
+from intake to fulfilment through the new pipeline (one component per hop, real persistence, no
+tuning, no load handling, no dashboards). It carries no real traffic yet; performance targets and
+product-outcome KPIs are explicitly out of scope for this iteration — the team will revisit both
+once the path exists and real orders flow. For everything you would normally ask, take the
+sensible default and record it in the assumptions ledger (size signals: 2–3 PRs, ~1 week, one
+new module, internal only). Skip any subagent/ideation dispatch that is unavailable and note the
+gap. Write the spec and finish by printing the stage-handoff block.

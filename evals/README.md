@@ -48,6 +48,7 @@ Exit code is non-zero when any scenario's verdict is `FAIL` (or unparseable).
 | `specify-happy-path` | `/sdd:specify` produces a spec.md with §1–§8, business-observable ACs, `.size` + `.route`, and the handoff block |
 | `specify-unfamiliar-domain-discovery` | `/sdd:specify --depth=easy` still runs risk-gated authoritative domain discovery, writes `discovery.md`, preserves `RESEARCH_LIMITED` source gaps, and feeds relevant findings into `spec.md` |
 | `specify-product-measurement-plan` | `/sdd:specify` produces actionable KPI rows with observable sources, baseline plans, target/timeboxes, decision thresholds, owners, and review timing |
+| `specify-measurement-na-waiver` | `/sdd:specify` on a walking skeleton resolves §6/§7 to a sourced `Measurement: N/A` + §8 revisit instead of fabricated targets or vanity rows |
 | `plan-tests-risk-measurement-coverage` | `/sdd:plan-tests` traces retained risks and KPI promises into task-linked pre-release evidence plus honest post-release outcome monitoring |
 | `survey-authority-conflict` | `/sdd:survey` follows a current local-CLI plan over a conflicting historical distributed-system spike and keeps the scaffold structural |
 | `survey-missing-active-plan` | `/sdd:survey` on a docs-only repo whose authority map says the active architecture plan is missing stops without promoting historical research |

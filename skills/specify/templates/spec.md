@@ -93,7 +93,8 @@ Tag each AC with its US-NN. Concurrent edge → add as AC-NNb, still in business
 
 ## 6. Non-functional requirements
 
-<!-- instruction: table, recommended floor (not a cap). Targets are NUMERIC (≤250ms, ≥30 req/s, 99.9%) — no adjectives («fast», «high»). Measurement = a concrete production metric. Unknown number → TBD with owner+due in §8, never «fast». -->
+<!-- instruction: table, recommended floor (not a cap). Targets are NUMERIC (≤250ms, ≥30 req/s, 99.9%) — no adjectives («fast», «high»). Measurement = a concrete production metric. Unknown number → TBD with owner+due in §8, never «fast».
+Waiver: when the scenario type makes an aspect meaningless (e.g. latency on a walking skeleton), the aspect may instead carry a sourced `**Measurement: N/A — <reason> (source: <artifact + §ref>)` line + a §8 revisit — aspect-scoped, never a silent whole-table drop (see draft-generation.md). -->
 
 | Aspect | Target | Measurement |
 |---|---|---|
@@ -123,7 +124,8 @@ Tag each AC with its US-NN. Concurrent edge → add as AC-NNb, still in business
 
 ## 7. Metrics / KPIs
 
-<!-- instruction: ≥3 important product-outcome KPIs, no upper cap. Every row fills all columns. baseline=0 is valid only when the current baseline is genuinely zero. An unknown or future-measured baseline is allowed only when Source/event explains how it will be established and §8 carries the owner+due. Decision threshold = the condition, evaluated after the timebox, that triggers ship / continue / iterate / rollback / stop / investigate. -->
+<!-- instruction: ≥3 important product-outcome KPIs, no upper cap. Every row fills all columns. baseline=0 is valid only when the current baseline is genuinely zero. An unknown or future-measured baseline is allowed only when Source/event explains how it will be established and §8 carries the owner+due. Decision threshold = the condition, evaluated after the timebox, that triggers ship / continue / iterate / rollback / stop / investigate.
+Waiver: only when the scenario type (e.g. walking skeleton, throwaway spike) makes outcome measurement not yet meaningful AND an upstream source (§1 ¶3 / §3 / discovery / interview) says so, §7 may instead be a sourced `**Measurement: N/A — <reason> (source: <artifact + §ref>)` line + a §8 revisit OQ with owner + due. Never placeholder or vanity rows; never a silent empty table (see draft-generation.md). -->
 
 | Metric | Why it matters | Source/event | Baseline | Target/timebox | Decision threshold | Owner | When reviewed |
 |---|---|---|---|---|---|---|---|

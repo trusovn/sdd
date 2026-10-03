@@ -86,7 +86,9 @@ handle. Status is Open, Accepted, or Mitigated. -->
 ## 10. Measurement / KPI Seeds
 
 <!-- instruction: These are observable candidates for spec §7, not final KPIs. Connect every seed
-to a success claim, assumption, failure mode, or risk. -->
+to a success claim, assumption, failure mode, or risk. If §7 later carries a measurement N/A,
+each live seed here is evidence that measurement IS applicable — resolve every seed into a §7
+row or defer it explicitly with an owner; a waiver may not silently discard them. -->
 
 | Signal | Why it matters | Possible source/event | Baseline status | Decision it informs |
 |---|---|---|---|---|

@@ -645,6 +645,60 @@ def main() -> int:
           "skills/specify/templates/spec.md must show the sourced `Authorization: N/A` waiver "
           "line next to the coverage-type list")
 
+    # --- specify measurement waiver: §6/§7 targets may be declined only sourced + revisitable ---
+    # The authorization-N/A genre applied to numbers: a walking skeleton / spike / throwaway tool
+    # may waive numeric §6 aspects and the §7 KPI table — but only as an explicit, sourced
+    # `Measurement: N/A` line with a §8 revisit OQ. A future simplification must not turn it
+    # into a silent empty table (numbers vanish) nor close the door again (vanity rows return).
+    # Guard every link: the canon definition, the template forms, the Socratic + critic gates,
+    # and the downstream consumers (clarify's unmeasured-NFR class, design's §10, plan-tests'
+    # measurement readiness).
+    print("== specify measurement waiver ==")
+    waiver_files = {
+        "draft-generation.md": flat(draft_gen_path) if draft_gen_path.exists() else "",
+        "socratic.md": flat(socratic_path) if socratic_path.exists() else "",
+        "critic.md": flat(specify_critic_path) if specify_critic_path.exists() else "",
+        "spec-template": flat(spec_template_path) if spec_template_path.exists() else "",
+    }
+    for waiver_file, waiver_text in waiver_files.items():
+        check("measurement: n/a" in waiver_text and "source" in waiver_text,
+              f"measurement N/A waiver stays explicit + sourced in {waiver_file}",
+              f"the measurement waiver must remain an explicit, source-cited `Measurement: N/A` "
+              f"in {waiver_file} — a silent empty §6/§7 or an unsourced excuse is a floor violation")
+    for waiver_file, waiver_text in waiver_files.items():
+        check("revisit" in waiver_text,
+              f"measurement N/A waiver stays revisitable in {waiver_file}",
+              f"{waiver_file} must tie the `Measurement: N/A` waiver to a §8 revisit OQ with "
+              f"owner + due — an unrevisitable waiver silently becomes permanent")
+    check("scenario type" in waiver_files["draft-generation.md"],
+          "draft-generation.md names the waiver's applicability condition",
+          "skills/specify/references/draft-generation.md must tie the measurement N/A to a "
+          "scenario type an upstream source establishes (walking skeleton / spike / throwaway)")
+    check("measurement: n/a" in flat(ambiguity_path) if ambiguity_path.exists() else True,
+          "clarify's unmeasured-NFR class recognizes the sourced waiver",
+          "skills/clarify/references/ambiguity-checks.md must treat the sourced measurement "
+          "N/A as a legal decline (verify its §8 revisit), not re-flag it as unmeasured")
+    design_draft_text = flat(ROOT / "skills" / "design" / "references" / "draft-generation.md")
+    check("measurement n/a" in design_draft_text,
+          "design's quality goals derive without minting numbers for waived aspects",
+          "skills/design/references/draft-generation.md must handle the sourced §6 measurement "
+          "N/A — qualitative §10 scenario or dropped goal, never an invented target")
+    check("fewer than 3" in design_draft_text,
+          "design's ≥3 quality-goal floor degrades when the spec keeps fewer aspects",
+          "skills/design/references/draft-generation.md must relax the ≥3 quality-goal / §10 "
+          "scenario floors to one-per-kept-aspect when the spec's §6 waivers leave fewer than "
+          "3 aspects — else the waiver forces padding with invented qualities")
+    design_sad_text = flat(ROOT / "skills" / "design" / "templates" / "sad.md")
+    check("no padding" in design_sad_text,
+          "sad.md template allows fewer than 3 QG blocks when §6 keeps fewer aspects",
+          "skills/design/templates/sad.md must not hard-code 3 quality-goal / QG blocks — a "
+          "waived spec yields fewer, and padding is a floor violation")
+    plan_tests_text_2 = flat(ROOT / "skills" / "plan-tests" / "SKILL.md")
+    check("measurement: n/a" in plan_tests_text_2 and "revisit" in plan_tests_text_2,
+          "plan-tests mirrors a waived §7 instead of fabricating MEAS rows",
+          "skills/plan-tests/SKILL.md must mirror the sourced measurement N/A (revisit "
+          "accounted for) rather than inventing measurement-readiness rows")
+
     # --- plan-tests risk + measurement continuity: promises reach executable/release evidence ---
     # Risk/KPI rows are useful only if plan-tests distinguishes pre-release readiness from future
     # outcomes and implement refuses to silently drop executable rows that have no task owner.

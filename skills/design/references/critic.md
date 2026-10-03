@@ -26,7 +26,7 @@ After applying all drops + OQ-migrations, the draft must still satisfy every lin
 
 Three sub-probes — cite the offending line + the upstream source it contradicts for each hit:
 
-- **NFR-number leak.** §10 Quality scenarios cite a number that is **not** in spec §6 NFR (an invented target — e.g. a p99 figure when the spec only specifies p95). The spec's numbers go in verbatim; no rounding, no inventing.
+- **NFR-number leak.** §10 Quality scenarios cite a number that is **not** in spec §6 NFR (an invented target — e.g. a p99 figure when the spec only specifies p95). The spec's numbers go in verbatim; no rounding, no inventing. A §6 aspect waived by its sourced measurement N/A has no number to cite — a §10 scenario for that aspect is legal only qualitatively (no minted target); a numeric scenario for a waived aspect is the leak in its purest form. **Goal padding is the same leak at the goal level:** a §1 quality goal or §10 scenario minted for a waived aspect — or an inflated goal count to satisfy a ≥3 floor the spec's kept rows do not support — is a hit; a spec whose §6 keeps fewer than 3 aspects legitimately yields fewer than 3 goals/scenarios.
 - **Strawman ADR.** Any ADR in `adr/` lists a `Considered options` line that an existing constraint already excludes (e.g. a datastore the §2/CONTEXT constraints rule out; a cache tier with no §4 strategic seed for it). Strawmen dilute the ADR genre.
 - **§2-constraint-vs-repo contradiction.** §2 Constraints contradicts the repo's conventions (as reported by the Step-4 brownfield scan, or the project convention file if known) **without** an Override note pointing at §11 Risks or a §1 ¶4 override bullet.
 
